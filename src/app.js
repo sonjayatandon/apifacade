@@ -44,7 +44,11 @@ logger.add(logger.transports.Console, {
  *   Fetch the registry for the service and apply a policy check
  *   If the policy check passes, route the request to the service and return the results
  */
-app.use(routeToService.send);
+app.use(
+    (req,res,next) =>  {
+        routeToService.send(req,res,next);
+    }
+);
 
 setTimeout(function() {
   emitter.emit('ready', app);   

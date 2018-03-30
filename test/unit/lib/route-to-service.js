@@ -3,7 +3,6 @@ const assert = require('assert');
 const when = require('when'); 
 const nock = require('nock');
 const sinon = require('sinon');
-const dns = require('dns');
 
 describe('lib/route-to-service', () => { 
   describe('#send', () => {
@@ -17,20 +16,11 @@ describe('lib/route-to-service', () => {
         sandbox = sinon.sandbox.create();
         env = process.env;
      
-        sandbox.stub(dns, 'resolveSrv')
-            .usingPromise(when)
-            .callsFake(function blat() {console.log("in fake function")})
-            .resolves([{"name":"ac120005.addr.dc1.consul","port":5000,"priority":1,"weight":1}]);
-        sandbox.stub(dns, 'resolve')
-            .usingPromise(when)
-            .callsFake(function blat() {console.log("in resolve fake")})
-            .resolves('172.18.0.5');
-
-        sandbox.stub(routeToService, 'getHostName')
-            .usingPromise(when)
-            .callsFake(function blat() {console.log('in stub for getHostName');})
-            .resolves('products-service-host-port');
-        productService = nock('https://products-service-host-port')
+        sandbox.stub(routeToService.dns, 'resolveSrv')
+            .callsArgWith(1,null,[{"name":"ac120005.addr.dc1.consul","port":5000,"priority":1,"weight":1}]);
+        sandbox.stub(routeToService.dns, 'resolve')
+            .callsArgWith(1,null,'172.18.0.5');
+        productService = nock('http://172.18.0.5:5000')
         .get('/products') 
         .reply(200, [{
             'name':'product1'
@@ -44,7 +34,7 @@ describe('lib/route-to-service', () => {
  
       it('should proxy to products-service via consul', () => {
         console.log('starting test'); 
-        return when(routeToService.send({'url':'/products-service/products'}))
+        return when(routeToService.send({'protocol':'http','url':'/products-service/products', 'body':'', 'method':'Get', 'parseReqBody':false}))
         .then(products => {
             assert(products);
             assert.equal(products,"[{\"name\":\"product1\"}]"); 
