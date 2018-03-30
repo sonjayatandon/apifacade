@@ -16,5 +16,7 @@ RUN npm install
 
 ADD ./src  /usr/src/app/src
 ADD ./test /usr/src/app/test
+ADD ./start.sh /usr/src/app/start.sh
 
+ENTRYPOINT ["/bin/bash", "/usr/src/app/start.sh"]
 CMD ["node", "/usr/src/app/src/index.js"]

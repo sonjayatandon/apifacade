@@ -15,6 +15,8 @@ const when = require('when');
 
 const hostname = os.hostname();
 
+const routeToService = require('./lib/route-to-service.js');
+
 // Create a new server app
 var app = express();
 
@@ -35,6 +37,18 @@ logger.add(logger.transports.Console, {
       .join('');
   }
 });
+
+/**
+ * All requests are either approved and routed to the desired service or rejected
+ * Requests will be of the form [service-name]/path[?[params]
+ *   Fetch the registry for the service and apply a policy check
+ *   If the policy check passes, route the request to the service and return the results
+ */
+app.use(
+    (req,res,next) =>  {
+        routeToService.send(req,res,next);
+    }
+);
 
 setTimeout(function() {
   emitter.emit('ready', app);   

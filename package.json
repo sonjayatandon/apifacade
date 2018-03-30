@@ -5,16 +5,22 @@
   "private": true,
   "scripts": {
     "unit-test": "istanbul cover _mocha test/unit/index.js",
-    "test": "docker-compose build && docker-compose up -d api-facade && docker-compose run api-facade npm run unit-test && docker-compose down"
+    "test": "docker-compose build && docker-compose up -d consul && docker-compose up -d api-facade && docker-compose run api-facade npm run unit-test && docker-compose down"
   },
   "dependencies": {
     "chai": "^4.1.2",
     "chai-like": "^0.2.14",
     "express": "^4.16.2",
+    "express-http-proxy": "^1.1.0",
     "istanbul": "^0.4.5",
     "lodash": "^4.17.4",
     "mocha": "^4.0.1",
     "moment": "^2.19.1",
+    "nock": "^9.1.0",
+    "node-dns": "^0.1.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "sinon": "^4.1.2",
     "when": "^3.7.8",
     "winston": "^2.4.0"
   }
