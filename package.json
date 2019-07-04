@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "unit-test": "istanbul cover _mocha test/unit/index.js",
-    "test": "docker-compose build && docker-compose up -d api-facade && docker-compose run api-facade npm run unit-test && docker-compose down"
+    "test": "docker-compose build && docker-compose up -d api-facade && docker-compose run api-facade npm run unit-test && docker-compose down",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "chai": "^4.1.2",
@@ -16,7 +18,9 @@
     "mocha": "^4.0.1",
     "moment": "^2.19.1",
     "when": "^3.7.8",
-    "winston": "^2.4.0"
-  }
+    "winston": "^2.4.0",
+    "snyk": "^1.189.0"
+  },
+  "snyk": true
 }
 
